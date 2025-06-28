@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,8 +21,8 @@ public class Retail {
     private long id;
     @Column(name = "retail_Name", nullable = false)
     private String retailName;
-    @Column(name = "retail_Book", nullable = false)
-    private String retailBook;
+    @OneToMany(mappedBy = "retail", cascade = CascadeType.ALL)
+    private List<Book> books;
 
     // Getters
     public long getId() {
@@ -31,9 +33,10 @@ public class Retail {
         return retailName;
     }
 
-    public String getRetailBook() {
-        return retailBook;
+    public List<Book> getBooks() {
+        return books;
     }
+
 
 
 
@@ -46,8 +49,8 @@ public class Retail {
         this.retailName = retailName;
     }
 
-    public void setRetailBook(String retailBook) {
-        this.retailBook = retailBook;
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
 

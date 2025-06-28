@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,8 +22,9 @@ public class Author {
     private String authorFirstName;
     @Column(name = "author_lastName", nullable = false)
     private String authorLastName;
-    @Column(name = "author_book", nullable = false)
-    private String authorBook;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Book> books;
+
 
     // Getters
     public long getId() {
@@ -31,14 +34,17 @@ public class Author {
     public String getAuthorFirstName() {
         return authorFirstName;
     }
-
     public String getAuthorLastName() {
         return authorLastName;
     }
 
-    public String getAuthorBook() {
-        return authorBook;
+    public List<Book> getBooks() {
+        return books;
     }
+
+
+
+
 
 
 
@@ -55,9 +61,12 @@ public class Author {
         this.authorLastName = authorLastName;
     }
 
-    public void setAuthorBook(String authorBook) {
-        this.authorBook = authorBook;
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
+
+
 
 
 

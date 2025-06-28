@@ -20,10 +20,13 @@ public class Book {
     private String bookTitle;
     @Column(name = "book_code", nullable = false)
     private String bookCode;
-    @Column(name = "book_author", nullable = false)
-    private String bookAuthor;
-    @Column(name = "book_retailer", nullable = false)
-    private String bookRetailer;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
+    @ManyToOne
+    @JoinColumn(name = "retail_id")
+    private Retail retail;
 
     // Getters
     public long getId() {
@@ -38,13 +41,14 @@ public class Book {
         return bookCode;
     }
 
-    public String getbookAuthor() {
-        return bookAuthor;
+    public Author getAuthor() {
+        return author;
     }
 
-    public String getbookRetailer() {
-        return bookRetailer;
+    public Retail getRetail() {
+        return retail;
     }
+
 
 
     // Setters
@@ -60,13 +64,15 @@ public class Book {
         this.bookCode = bookCode;
     }
 
-    public void setBookAuthor(String bookAuthor) {
-        this.bookAuthor = bookAuthor;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
-    public void setBookRetailer(String bookRetailer) {
-        this.bookRetailer = bookRetailer;
+    public void setRetail(Retail retail) {
+        this.retail = retail;
     }
+
+
 
 
 }

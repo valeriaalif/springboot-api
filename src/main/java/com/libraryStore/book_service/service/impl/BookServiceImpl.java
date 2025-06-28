@@ -1,8 +1,12 @@
 package com.libraryStore.book_service.service.impl;
 
 
+import com.libraryStore.book_service.model.Author;
 import com.libraryStore.book_service.model.Book;
+import com.libraryStore.book_service.model.Retail;
+import com.libraryStore.book_service.repository.AuthorRepository;
 import com.libraryStore.book_service.repository.BookRepository;
+import com.libraryStore.book_service.repository.RetailRepository;
 import com.libraryStore.book_service.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,50 +19,66 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private AuthorRepository authorRepository;
 
-    //save employee in database
-    @Override
-    public Book saveBook(Book Book){
-        return BookRepository.save(Book);
-    }
+    @Autowired
+    private RetailRepository retailRepository;
 
-    //get all employee form database
     @Override
     public List<Book> getAllBooks() {
-        return BookRepository.findAll();
+        return bookRepository.findAll();
     }
 
-    //get employee using id
     @Override
     public Book getBookById(long id) {
-        Optional<Book> Book =  BookRepository.findById(id);
-        if(Book.isPresent()){
-            return Book.get();
-        }else {
-            throw new RuntimeException();
-        }
+        return bookRepository.findById(id).orElse(null);
     }
 
-    //update employee
     @Override
-    public Book updateBook(Book Book, long id) {
-        Book existingBook = BookRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException()
-        );
-        existingBook.setBookName(Book.getBookName());
-        existingBook.setLocation(Book.getLocation());
-        existingBook.setPrincipalName(Book.getPrincipalName());
-        // save
-        BookRepository.save(existingBook);
-        return existingBook;
+    public Book createBook(Book book) {
+        return bookRepository.save(book);
     }
 
-    //delete employee
+    @Override
+    public Book createBookWithAuthor(long authorId, Book book) {
+        Optional<Author> author = authorRepository.findById(authorId);
+        if (author.isPresent()) {
+            book.setAuthor(author.get());
+            return bookRepository.save(book);
+        }
+        return null;
+    }
+
+    @Override
+    public Book assignRetailToBook(long bookId, long retailId) {
+        Optional<Book> book = bookRepository.findById(bookId);
+        Optional<Retail> retail = retailRepository.findById(retailId);
+
+        if (book.isPresent() && retail.isPresent()) {
+            Book b = book.get();
+            b.setRetail(retail.get());
+            return bookRepository.save(b);
+        }
+        return null;
+    }
+
+    @Override
+    public Book updateBook(long id, Book updatedBook) {
+        Optional<Book> bookOptional = bookRepository.findById(id);
+        if (bookOptional.isPresent()) {
+            Book book = bookOptional.get();
+            book.setBookTitle(updatedBook.getbookTitle());
+            book.setBookCode(updatedBook.getbookCode());
+            book.setAuthor(updatedBook.getAuthor());
+            book.setRetail(updatedBook.getRetail());
+            return bookRepository.save(book);
+        }
+        return null;
+    }
+
     @Override
     public void deleteBook(long id) {
-        //check
-        BookRepository.findById(id).orElseThrow(()-> new RuntimeException());
-        //delete
-        BookRepository.deleteById(id);
+        bookRepository.deleteById(id);
     }
 }
